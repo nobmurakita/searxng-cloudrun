@@ -1,0 +1,11 @@
+:8080 {
+	@private {
+		not path /healthz
+	}
+
+	basic_auth @private {
+		{$BASIC_AUTH_USER} {$BASIC_AUTH_PASS_HASH}
+	}
+
+	reverse_proxy 127.0.0.1:8888
+}
