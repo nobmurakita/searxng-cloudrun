@@ -1,5 +1,2 @@
 *
-!Caddyfile
-!Dockerfile
-!entrypoint.sh
-!settings.yml
+!docker/

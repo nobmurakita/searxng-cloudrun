@@ -30,7 +30,7 @@ openssl rand -hex 16
 ## ローカルで起動
 
 ```bash
-docker build -t searxng . && docker run --rm -p 8080:8080 --env-file .env searxng
+./dev.sh
 ```
 
 http://localhost:8080 にアクセスし、`.env` に設定した認証情報でログインします。
@@ -38,12 +38,8 @@ http://localhost:8080 にアクセスし、`.env` に設定した認証情報で
 ## Cloud Run へデプロイ
 
 ```bash
-gcloud run deploy searxng \
-  --source . \
-  --execution-environment gen2 \
-  --allow-unauthenticated \
-  --startup-probe httpGet.path=/healthz \
-  --env-vars-file .env \
-  --region asia-northeast1 \
-  --project your-project-id
+./deploy.sh [サービス名] [プロジェクトID]
 ```
+
+- サービス名省略時は `searxng`
+- プロジェクトID省略時は gcloud のデフォルトプロジェクトを使用

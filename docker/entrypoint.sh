@@ -14,9 +14,6 @@ if [ -z "$BASIC_AUTH_USER" ] || [ -z "$BASIC_AUTH_PASS" ]; then
     exit 1
 fi
 
-# Basic認証のパスワードをハッシュ化
-export BASIC_AUTH_PASS_HASH=$(printf '%s\n' "$BASIC_AUTH_PASS" | caddy hash-password)
-unset BASIC_AUTH_PASS
 
 # SearXNGをバックグラウンドで起動（ポート8888）
 export GRANIAN_HOST=127.0.0.1
@@ -24,7 +21,11 @@ export GRANIAN_PORT=8888
 /usr/local/searxng/entrypoint.sh &
 SEARXNG_PID=$!
 
-# Caddyをバックグラウンドで起動
+# SearXNG起動中にパスワードをハッシュ化（並行処理）
+export BASIC_AUTH_PASS_HASH=$(printf '%s\n' "$BASIC_AUTH_PASS" | caddy hash-password --bcrypt-cost 4)
+unset BASIC_AUTH_PASS
+
+# Caddyをバックグラウンドで起動（SearXNGと並列）
 caddy run --config /etc/caddy/Caddyfile &
 CADDY_PID=$!
 
